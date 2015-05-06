@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Generador de números aleatorios</name>
-	<url>http://www.adamaconsulting.es</url>
+	<url>https://${repository.domain}/${repository.user}/${repository.name}</url>
 
 	<organization>
 		<name>Adama Consulting</name>
@@ -48,17 +48,53 @@
 		<changelog.revision.fileUri>${project.scm.url}/commit</changelog.revision.fileUri>
 		<plugin.changelog>2.3</plugin.changelog>
 		<plugin.site>3.4</plugin.site>
+		<scmPublish.checkoutDirectory>${project.build.directory}/scmpublish</scmPublish.checkoutDirectory>
+		<repository.domain>github.com</repository.domain>
+		<repository.user>dicotraining</repository.user>
+		<repository.name>testing</repository.name>
+		<scm-publish.scmBranch>gh-pages</scm-publish.scmBranch>
+		<scm-publish.pubScmUrl>scm:git:git@github.com:dicotraining/testing.git</scm-publish.pubScmUrl>
+		<scm-publish.siteDocOutputdirectory>${project.reporting.outputDirectory}</scm-publish.siteDocOutputdirectory>
+		<plugin.scm-publish>1.0</plugin.scm-publish>
 	</properties>
 
 	<scm>
-		<connection>scm:git:file://${project.basedir}</connection>
-		<developerConnection>scm:git:file://${project.basedir}</developerConnection>
-		<url>scm:git:file://${project.basedir}</url>
+		<connection>scm:git:ssh://${repository.domain}/${repository.user}/${repository.name}.git</connection>
+		<developerConnection>scm:git:ssh://${repository.domain}/${repository.user}/${repository.name}.git</developerConnection>
+		<url>https://${repository.domain}/${repository.user}/${repository.name}</url>
 		<tag>HEAD</tag>
 	</scm>
-
+	<issueManagement>
+		<url>https://${repository.domain}/${repository.user}/${repository.name}/issues</url>
+		<system>Github issues</system>
+	</issueManagement>
 	<build>
+	<extensions>
+		<extension>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ssh</artifactId>
+			<version>2.2</version>
+		</extension>
+		<extension>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-webdav-jackrabbit</artifactId>
+			<version>1.0</version>
+		</extension>
+	</extensions>
 		<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-scm-publish-plugin</artifactId>
+			<version>${plugin.scm-publish}</version>	
+			<configuration>
+				<checkoutDirectory>${scmPublish.checkoutDirectory} </checkoutDirectory>
+				<checkinComment>Publishing site docs for ${project.artifactId}:${project.version} </checkinComment>
+				<content>${scm-publish.siteDocOutputdirectory}</content>
+				<skipDeleteFiles>true</skipDeleteFiles>
+				<pubScmUrl>${scm-publish.pubScmUrl} </pubScmUrl>
+				<scmBranch>${scm-publish.scmBranch} </scmBranch>
+			</configuration>			
+		</plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-site-plugin</artifactId>
